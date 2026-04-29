@@ -6,6 +6,29 @@ import plotly.graph_objects as go
 # Page Config
 st.set_page_config(page_title="Visualisation - Bank Analysis", page_icon="📊", layout="wide")
 
+# Custom CSS for Premium Look
+st.markdown("""
+<style>
+    .stMetric {
+        background-color: #ffffff;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .stHeader {
+        color: #1E3A8A;
+    }
+    div[data-testid="stExpander"] {
+        border: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .main {
+        background-color: #F8FAFC;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+
 @st.cache_data  
 def load_data():
     df = pd.read_csv('bank.csv') 
@@ -120,3 +143,23 @@ fig_camp = px.bar(x=campaign_counts.index, y=campaign_counts.values, title="Numb
 st.plotly_chart(fig_camp, use_container_width=True)
 
 st.info("**Insight:** A lower number of contacts (targeted approach) is often more effective than high-frequency persistence.")
+
+st.divider()
+
+st.subheader("6. Effectiveness of Previous Marketing Strategies")
+poutcome_counts = filtered_df_yes['poutcome'].value_counts().sort_values()
+fig_poutcome = px.pie(
+    names=poutcome_counts.index, 
+    values=poutcome_counts.values, 
+    title="Outcome of Previous Campaigns",
+    color_discrete_sequence=px.colors.qualitative.Prism,
+    hole=0.4
+)
+st.plotly_chart(fig_poutcome, use_container_width=True)
+
+st.markdown("""
+<div style='background-color: #E0F2FE; padding: 15px; border-radius: 8px;'>
+    <p style='margin: 0; color: #0369A1;'><b>Conclusion:</b> Successful previous campaigns are strong indicators of future success. However, data quality improvements are recommended for 'unknown' outcomes to further refine predictive accuracy.</p>
+</div>
+""", unsafe_allow_html=True)
+
